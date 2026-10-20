@@ -64,7 +64,7 @@ jobs:
       - name: Build
         run: dotnet build -c Release
       - name: Publish
-        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r ${{ matrix.runtime }}
+        run: dotnet publish src/SourceGit.csproj -c Release -o publish -r ${{ matrix.runtime }} -p:DisableUpdateDetection=true
       - name: Rename executable file
         if: startsWith(matrix.runtime, 'linux-')
         run: mv publish/SourceGit publish/sourcegit

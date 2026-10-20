@@ -1,0 +1,51 @@
+# Package for this fork of SourceGit (adds GitHub/GitLab account integration).
+# Installs the .deb built by this repository's release workflow (GitHub Actions),
+# the same way the upstream `sourcegit-bin` AUR package does for upstream releases.
+#
+# Releases of the fork are tagged `vYYYY.NN.R` (upstream version + fork revision),
+# e.g. upstream 2026.22 -> fork tag v2026.22.1. Bump pkgver to the tag (without `v`)
+# and run `updpkgsums` after the release workflow has uploaded its assets.
+
+pkgname=sourcegit-accounts-bin
+_name=sourcegit
+_owner=cerocss
+pkgver=2026.22.1
+pkgrel=1
+pkgdesc="GUI client for GIT users (fork with GitHub/GitLab account integration)"
+arch=('x86_64' 'aarch64')
+url="https://github.com/${_owner}/${_name}"
+license=('MIT')
+provides=('sourcegit' 'sourcegit-bin')
+conflicts=('sourcegit' 'sourcegit-bin')
+depends=('git' 'xdg-utils')
+optdepends=('git-credential-manager: third-party authentication support')
+makedepends=('desktop-file-utils')
+
+_debrev=1
+_release="${url}/releases/download/v${pkgver}"
+source=("${_name}_${pkgver}-LICENSE::https://raw.githubusercontent.com/${_owner}/${_name}/v${pkgver}/LICENSE")
+source_x86_64=("${_name}_${pkgver}-${_debrev}_amd64.deb::${_release}/${_name}_${pkgver}-${_debrev}_amd64.deb")
+source_aarch64=("${_name}_${pkgver}-${_debrev}_arm64.deb::${_release}/${_name}_${pkgver}-${_debrev}_arm64.deb")
+# Run `updpkgsums` once the release assets exist.
+sha256sums=('SKIP')
+sha256sums_x86_64=('SKIP')
+sha256sums_aarch64=('SKIP')
+
+prepare() {
+    bsdtar -xf data.tar.gz
+
+    desktop-file-edit usr/share/applications/sourcegit.desktop \
+        --set-icon=sourcegit --set-key=Exec --set-value=sourcegit
+}
+
+package() {
+    install -d "$pkgdir/opt/$_name/"
+    install -d "$pkgdir/usr/bin/"
+
+    cp -r opt/sourcegit/* "$pkgdir/opt/$_name/"
+    ln -s "/opt/$_name/$_name" "$pkgdir/usr/bin/$_name"
+
+    install -Dm644 usr/share/icons/sourcegit.png "$pkgdir/usr/share/icons/hicolor/256x256/apps/$_name.png"
+    install -Dm644 usr/share/applications/sourcegit.desktop "$pkgdir/usr/share/applications/$_name.desktop"
+    install -Dm644 "${_name}_${pkgver}-LICENSE" "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

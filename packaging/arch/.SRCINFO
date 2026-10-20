@@ -1,0 +1,24 @@
+pkgbase = sourcegit-accounts-bin
+	pkgdesc = GUI client for GIT users (fork with GitHub/GitLab account integration)
+	pkgver = 2026.22.1
+	pkgrel = 1
+	url = https://github.com/cerocss/sourcegit
+	arch = x86_64
+	arch = aarch64
+	license = MIT
+	makedepends = desktop-file-utils
+	depends = git
+	depends = xdg-utils
+	optdepends = git-credential-manager: third-party authentication support
+	provides = sourcegit
+	provides = sourcegit-bin
+	conflicts = sourcegit
+	conflicts = sourcegit-bin
+	source = sourcegit_2026.22.1-LICENSE::https://raw.githubusercontent.com/cerocss/sourcegit/v2026.22.1/LICENSE
+	sha256sums = SKIP
+	source_x86_64 = sourcegit_2026.22.1-1_amd64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.22.1/sourcegit_2026.22.1-1_amd64.deb
+	sha256sums_x86_64 = SKIP
+	source_aarch64 = sourcegit_2026.22.1-1_arm64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.22.1/sourcegit_2026.22.1-1_arm64.deb
+	sha256sums_aarch64 = SKIP
+
+pkgname = sourcegit-accounts-bin
