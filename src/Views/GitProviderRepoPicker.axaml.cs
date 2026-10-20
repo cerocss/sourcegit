@@ -37,6 +37,7 @@ namespace SourceGit.Views
 
             RepoTree.ItemsSource = null;
             TxtStatus.Text = "Loading groups...";
+            PbLoading.IsVisible = true;
 
             try
             {
@@ -45,12 +46,16 @@ namespace SourceGit.Views
                     return;
 
                 TxtStatus.Text = string.Empty;
+                PbLoading.IsVisible = false;
                 RepoTree.ItemsSource = roots;
             }
             catch (Exception ex)
             {
                 if (!token.IsCancellationRequested)
+                {
+                    PbLoading.IsVisible = false;
                     TxtStatus.Text = $"Failed to load groups: {ex.Message}";
+                }
             }
         }
 

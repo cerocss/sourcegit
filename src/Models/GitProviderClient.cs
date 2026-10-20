@@ -48,18 +48,50 @@ namespace SourceGit.Models
 
             var url = isGitHub
                 ? $"https://api.github.com/user/orgs?per_page={PAGE_SIZE}"
-                : $"{host}/api/v4/groups?min_access_level=10&top_level_only=true&per_page={PAGE_SIZE}&order_by=name";
+                : $"{host}/api/v4/groups?min_access_level=10&per_page={PAGE_SIZE}&order_by=name";
 
-            for (var page = 0; page < MAX_PAGES && url != null; page++)
+            // GitLab: list every group the user is a member of (not only top-level ones, because access
+            // may be granted on a subgroup alone), then keep those whose parent is not in the list as roots.
+            var gitlabGroups = new List<JsonElement>();
+            var docs = new List<JsonDocument>();
+
+            try
             {
-                var (doc, next) = await GetJsonPageAsync(account, url, ct).ConfigureAwait(false);
-                url = next;
-
-                using (doc)
+                for (var page = 0; page < MAX_PAGES && url != null; page++)
                 {
+                    var (doc, next) = await GetJsonPageAsync(account, url, ct).ConfigureAwait(false);
+                    url = next;
+                    docs.Add(doc);
+
                     foreach (var item in doc.RootElement.EnumerateArray())
-                        roots.Add(isGitHub ? GitHubOrg(account, ct, item) : GitLabGroup(account, ct, item, Str(item, "full_path")));
+                    {
+                        if (isGitHub)
+                            roots.Add(GitHubOrg(account, ct, item));
+                        else
+                            gitlabGroups.Add(item);
+                    }
                 }
+
+                if (!isGitHub)
+                {
+                    var ids = new HashSet<string>();
+                    foreach (var item in gitlabGroups)
+                        ids.Add(item.GetProperty("id").GetRawText());
+
+                    foreach (var item in gitlabGroups)
+                    {
+                        var parent = item.TryGetProperty("parent_id", out var pid) && pid.ValueKind == JsonValueKind.Number
+                            ? pid.GetRawText()
+                            : null;
+                        if (parent == null || !ids.Contains(parent))
+                            roots.Add(GitLabGroup(account, ct, item, Str(item, "full_path")));
+                    }
+                }
+            }
+            finally
+            {
+                foreach (var doc in docs)
+                    doc.Dispose();
             }
 
             roots.Add(GitProviderNode.CreateGroup(account, ct, "All accessible projects (slow)", null, isGitHub

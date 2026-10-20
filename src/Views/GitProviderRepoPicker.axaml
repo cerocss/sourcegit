@@ -69,6 +69,7 @@
               </TreeDataTemplate>
             </TreeView.DataTemplates>
           </TreeView>
+          <ProgressBar x:Name="PbLoading" VerticalAlignment="Top" IsIndeterminate="True" IsVisible="False"/>
           <TextBlock x:Name="TxtStatus" HorizontalAlignment="Center" VerticalAlignment="Center" TextWrapping="Wrap"/>
         </Grid>
       </Border>
