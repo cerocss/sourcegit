@@ -61,35 +61,23 @@ namespace SourceGit.Models
         private async Task LoadAsync()
         {
             _loadStarted = true;
-            var first = true; // Only touched on the UI thread.
 
-            void Add(List<GitProviderNode> items)
+            // Collect everything first, then swap the placeholder for the full list in one step.
+            var all = new List<GitProviderNode>();
+
+            try
             {
+                await GitProviderClient.LoadChildrenAsync(_account, this, _ct, all.AddRange).ConfigureAwait(false);
                 Dispatcher.UIThread.Post(() =>
                 {
                     if (_ct.IsCancellationRequested)
                         return;
 
-                    if (first)
-                    {
-                        Children.Clear();
-                        first = false;
-                    }
-
-                    Children.AddRange(items);
-                });
-            }
-
-            try
-            {
-                await GitProviderClient.LoadChildrenAsync(_account, this, _ct, Add).ConfigureAwait(false);
-                Dispatcher.UIThread.Post(() =>
-                {
-                    if (first && !_ct.IsCancellationRequested)
-                    {
-                        Children.Clear();
+                    Children.Clear();
+                    if (all.Count > 0)
+                        Children.AddRange(all);
+                    else
                         Children.Add(Placeholder(_account, _ct, "(empty)"));
-                    }
                 });
             }
             catch (Exception e)
