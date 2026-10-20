@@ -74,10 +74,16 @@
         </Grid>
       </Border>
 
-      <StackPanel Grid.Row="2" Margin="0,8,0,0" Orientation="Horizontal" HorizontalAlignment="Right">
-        <Button x:Name="BtnSelect" Classes="flat primary" Width="80" Height="28" Content="Select" IsEnabled="False" Click="OnSelect"/>
-        <Button Classes="flat" Margin="8,0,0,0" Width="80" Height="28" Content="Cancel" Click="OnCancel"/>
-      </StackPanel>
+      <Grid Grid.Row="2" Margin="0,8,0,0" ColumnDefinitions="*,Auto">
+        <CheckBox Grid.Column="0" x:Name="ChkAll" VerticalAlignment="Center"
+                  Content="Advanced: show all accessible projects (slow)"
+                  IsCheckedChanged="OnShowAllChanged"/>
+
+        <StackPanel Grid.Column="1" Orientation="Horizontal">
+          <Button x:Name="BtnSelect" Classes="flat primary" Width="80" Height="28" Content="Select" IsEnabled="False" Click="OnSelect"/>
+          <Button Classes="flat" Margin="8,0,0,0" Width="80" Height="28" Content="Cancel" Click="OnCancel"/>
+        </StackPanel>
+      </Grid>
     </Grid>
   </Grid>
 </v:ChromelessWindow>

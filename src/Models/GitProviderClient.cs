@@ -33,8 +33,8 @@ namespace SourceGit.Models
         }
 
         /// <summary>
-        ///     Root nodes of the tree: personal projects, each top-level group / organization, and
-        ///     (lazily) everything the account can access. Only the group list is fetched here.
+        ///     Root nodes of the tree: personal projects and each group / organization.
+        ///     Only the group list is fetched here.
         /// </summary>
         public static async Task<List<GitProviderNode>> ListRootsAsync(GitProviderAccount account, CancellationToken ct)
         {
@@ -94,10 +94,18 @@ namespace SourceGit.Models
                     doc.Dispose();
             }
 
-            roots.Add(GitProviderNode.CreateGroup(account, ct, "All accessible projects (slow)", null, isGitHub
-                ? $"https://api.github.com/user/repos?per_page={PAGE_SIZE}&sort=updated&affiliation=owner,collaborator,organization_member"
-                : $"{host}/api/v4/projects?membership=true&simple=true&per_page={PAGE_SIZE}&order_by=last_activity_at&sort=desc&pagination=keyset"));
             return roots;
+        }
+
+        /// <summary>
+        ///     Advanced node listing every project the account can access (can be very slow on big accounts).
+        /// </summary>
+        public static GitProviderNode CreateAllProjectsNode(GitProviderAccount account, CancellationToken ct)
+        {
+            var isGitHub = account.Type == GitProviderType.GitHub;
+            return GitProviderNode.CreateGroup(account, ct, "All accessible projects (slow)", null, isGitHub
+                ? $"https://api.github.com/user/repos?per_page={PAGE_SIZE}&sort=updated&affiliation=owner,collaborator,organization_member"
+                : $"{account.Host}/api/v4/projects?membership=true&simple=true&per_page={PAGE_SIZE}&order_by=last_activity_at&sort=desc&pagination=keyset");
         }
 
         /// <summary>

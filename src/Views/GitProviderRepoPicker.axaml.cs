@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 
+using Avalonia.Collections;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 
@@ -15,6 +16,7 @@ namespace SourceGit.Views
             CloseOnESC = true;
             InitializeComponent();
 
+            RepoTree.ItemsSource = _roots;
             CmbAccount.ItemsSource = ViewModels.GitProviderAccounts.Instance.Accounts;
             if (CmbAccount.ItemCount > 0)
                 CmbAccount.SelectedIndex = 0;
@@ -35,8 +37,8 @@ namespace SourceGit.Views
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
 
-            RepoTree.ItemsSource = null;
-            TxtStatus.Text = "Loading groups...";
+            // Keep the current tree on screen (dimmed) until the new roots are ready to avoid flicker.
+            RepoTree.IsEnabled = false;
             PbLoading.IsVisible = true;
 
             try
@@ -45,17 +47,55 @@ namespace SourceGit.Views
                 if (token.IsCancellationRequested)
                     return;
 
+                _account = account;
+                _token = token;
+                _allNode = null;
+                if (ChkAll.IsChecked == true)
+                {
+                    _allNode = Models.GitProviderClient.CreateAllProjectsNode(account, token);
+                    roots.Add(_allNode);
+                }
+
+                _roots = new AvaloniaList<Models.GitProviderNode>(roots);
+                RepoTree.ItemsSource = _roots; // Single swap, no intermediate empty state.
                 TxtStatus.Text = string.Empty;
-                PbLoading.IsVisible = false;
-                RepoTree.ItemsSource = roots;
             }
             catch (Exception ex)
             {
                 if (!token.IsCancellationRequested)
                 {
-                    PbLoading.IsVisible = false;
+                    _roots = [];
+                    RepoTree.ItemsSource = _roots;
                     TxtStatus.Text = $"Failed to load groups: {ex.Message}";
                 }
+            }
+            finally
+            {
+                if (!token.IsCancellationRequested)
+                {
+                    PbLoading.IsVisible = false;
+                    RepoTree.IsEnabled = true;
+                }
+            }
+        }
+
+        private void OnShowAllChanged(object _, RoutedEventArgs e)
+        {
+            if (_account == null)
+                return;
+
+            if (ChkAll.IsChecked == true)
+            {
+                if (_allNode == null)
+                {
+                    _allNode = Models.GitProviderClient.CreateAllProjectsNode(_account, _token);
+                    _roots.Add(_allNode);
+                }
+            }
+            else if (_allNode != null)
+            {
+                _roots.Remove(_allNode);
+                _allNode = null;
             }
         }
 
@@ -84,6 +124,10 @@ namespace SourceGit.Views
             Close();
         }
 
+        private AvaloniaList<Models.GitProviderNode> _roots = [];
+        private Models.GitProviderAccount _account = null;
+        private CancellationToken _token = CancellationToken.None;
+        private Models.GitProviderNode _allNode = null;
         private CancellationTokenSource _cts = null;
     }
 }
