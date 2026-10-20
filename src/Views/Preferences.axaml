@@ -947,6 +947,14 @@
             </ContentControl>
           </Grid>
         </TabItem>
+
+        <TabItem>
+          <TabItem.Header>
+            <TextBlock Classes="tab_header" Text="Git Accounts"/>
+          </TabItem.Header>
+
+          <v:GitProviderSettings/>
+        </TabItem>
       </TabControl>
     </Border>
   </Grid>

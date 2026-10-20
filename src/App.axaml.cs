@@ -245,6 +245,7 @@ namespace SourceGit
             SetLocale(pref.Locale);
             SetTheme(pref.Theme, pref.ThemeOverrides);
             SetFonts(pref.DefaultFontFamily, pref.MonospaceFontFamily);
+            ViewModels.GitProviderAccounts.Instance.ApplyGitEnvironment();
         }
 
         public override void OnFrameworkInitializationCompleted()
