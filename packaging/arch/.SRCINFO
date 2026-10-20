@@ -1,6 +1,6 @@
 pkgbase = sourcegit-accounts-bin
 	pkgdesc = GUI client for GIT users (fork with GitHub/GitLab account integration)
-	pkgver = 2026.22.1
+	pkgver = 0.0.0
 	pkgrel = 1
 	url = https://github.com/cerocss/sourcegit
 	arch = x86_64
@@ -14,11 +14,11 @@ pkgbase = sourcegit-accounts-bin
 	provides = sourcegit-bin
 	conflicts = sourcegit
 	conflicts = sourcegit-bin
-	source = sourcegit_2026.22.1-LICENSE::https://raw.githubusercontent.com/cerocss/sourcegit/v2026.22.1/LICENSE
+	source = sourcegit_0.0.0-LICENSE::https://raw.githubusercontent.com/cerocss/sourcegit/v0.0.0/LICENSE
 	sha256sums = SKIP
-	source_x86_64 = sourcegit_2026.22.1-1_amd64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.22.1/sourcegit_2026.22.1-1_amd64.deb
+	source_x86_64 = sourcegit_0.0.0-1_amd64.deb::https://github.com/cerocss/sourcegit/releases/download/v0.0.0/sourcegit_0.0.0-1_amd64.deb
 	sha256sums_x86_64 = SKIP
-	source_aarch64 = sourcegit_2026.22.1-1_arm64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.22.1/sourcegit_2026.22.1-1_arm64.deb
+	source_aarch64 = sourcegit_0.0.0-1_arm64.deb::https://github.com/cerocss/sourcegit/releases/download/v0.0.0/sourcegit_0.0.0-1_arm64.deb
 	sha256sums_aarch64 = SKIP
 
 pkgname = sourcegit-accounts-bin
