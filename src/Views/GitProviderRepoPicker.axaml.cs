@@ -1,6 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 
 using Avalonia.Controls;
@@ -24,7 +22,7 @@ namespace SourceGit.Views
 
         protected override void OnClosed(EventArgs e)
         {
-            _cts?.Cancel();
+            _cts?.Cancel(); // Also cancels every pending lazy load of the tree.
             base.OnClosed(e);
         }
 
@@ -37,56 +35,42 @@ namespace SourceGit.Views
             _cts = new CancellationTokenSource();
             var token = _cts.Token;
 
-            _repos = [];
-            ApplyFilter();
-            TxtStatus.Text = "Loading repositories...";
+            RepoTree.ItemsSource = null;
+            TxtStatus.Text = "Loading groups...";
 
             try
             {
-                var repos = await Models.GitProviderClient.ListReposAsync(account, token);
+                var roots = await Models.GitProviderClient.ListRootsAsync(account, token);
                 if (token.IsCancellationRequested)
                     return;
 
-                _repos = repos;
-                TxtStatus.Text = repos.Count == 0 ? "No repositories found." : string.Empty;
-                ApplyFilter();
+                TxtStatus.Text = string.Empty;
+                RepoTree.ItemsSource = roots;
             }
             catch (Exception ex)
             {
                 if (!token.IsCancellationRequested)
-                    TxtStatus.Text = $"Failed to load repositories: {ex.Message}";
+                    TxtStatus.Text = $"Failed to load groups: {ex.Message}";
             }
         }
 
-        private void OnFilterChanged(object _, TextChangedEventArgs e)
+        private void OnTreeSelectionChanged(object _, SelectionChangedEventArgs e)
         {
-            ApplyFilter();
+            BtnSelect.IsEnabled = RepoTree.SelectedItem is Models.GitProviderNode { Repo: not null };
         }
 
-        private void ApplyFilter()
+        private void OnTreeDoubleTapped(object _, Avalonia.Input.TappedEventArgs e)
         {
-            var filter = TxtFilter.Text?.Trim() ?? string.Empty;
-            RepoList.ItemsSource = filter.Length == 0
-                ? _repos
-                : _repos.Where(r => r.FullName.Contains(filter, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        private void OnRepoSelectionChanged(object _, SelectionChangedEventArgs e)
-        {
-            BtnSelect.IsEnabled = RepoList.SelectedItem != null;
-        }
-
-        private void OnRepoDoubleTapped(object _, Avalonia.Input.TappedEventArgs e)
-        {
-            OnSelect(null, null);
+            if (RepoTree.SelectedItem is Models.GitProviderNode { Repo: not null })
+                OnSelect(null, null);
         }
 
         private void OnSelect(object _, RoutedEventArgs e)
         {
-            if (RepoList.SelectedItem is not Models.GitProviderRepo repo)
+            if (RepoTree.SelectedItem is not Models.GitProviderNode { Repo: not null } node)
                 return;
 
-            Result = repo;
+            Result = node.Repo;
             Close();
         }
 
@@ -95,7 +79,6 @@ namespace SourceGit.Views
             Close();
         }
 
-        private List<Models.GitProviderRepo> _repos = [];
         private CancellationTokenSource _cts = null;
     }
 }
