@@ -9,6 +9,8 @@ on:
 
 jobs:
   localization-check:
+    # Pushes commits to the branch; on forks that would diverge it from upstream.
+    if: github.repository == 'sourcegit-scm/sourcegit'
     runs-on: ubuntu-latest
 
     steps:

@@ -6,6 +6,8 @@ on:
 
 jobs:
   notify-homebrew:
+    # Only the upstream project owns the tap and its token; never run on forks.
+    if: github.repository == 'sourcegit-scm/sourcegit'
     runs-on: ubuntu-latest
     steps:
       - name: Notify Homebrew tap
