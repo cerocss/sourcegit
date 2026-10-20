@@ -11,7 +11,7 @@
 pkgname=sourcegit-accounts-bin
 _name=sourcegit
 _owner=cerocss
-pkgver=0.0.0 # PLACEHOLDER: set to the release tag without `v` after the release exists
+pkgver=2026.22.1
 pkgrel=1
 pkgdesc="GUI client for GIT users (fork with GitHub/GitLab account integration)"
 arch=('x86_64' 'aarch64')
@@ -29,9 +29,9 @@ source=("${_name}_${pkgver}-LICENSE::https://raw.githubusercontent.com/${_owner}
 source_x86_64=("${_name}_${pkgver}-${_debrev}_amd64.deb::${_release}/${_name}_${pkgver}-${_debrev}_amd64.deb")
 source_aarch64=("${_name}_${pkgver}-${_debrev}_arm64.deb::${_release}/${_name}_${pkgver}-${_debrev}_arm64.deb")
 # PLACEHOLDER: run `updpkgsums` once the release assets exist.
-sha256sums=('SKIP')
-sha256sums_x86_64=('SKIP')
-sha256sums_aarch64=('SKIP')
+sha256sums=('ec746490472d7ae4317d257df27ea8077f68c6079b07f8ff32ac6ae12db9f32f')
+sha256sums_x86_64=('0f0d99b9ce7988310f12b2c0f77c5a2b50cf4c7fcea98e1a90be9a07ff2bfb64')
+sha256sums_aarch64=('9b0504ab8d803f907a97088874d11c8dbbd41374b711cb38f96b80b16ea5600c')
 
 prepare() {
     bsdtar -xf data.tar.gz
