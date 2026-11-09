@@ -1,6 +1,6 @@
 pkgbase = sourcegit-accounts-bin
 	pkgdesc = GUI client for GIT users (fork with GitHub/GitLab account integration)
-	pkgver = 2026.23.1
+	pkgver = 2026.24.1
 	pkgrel = 1
 	url = https://github.com/cerocss/sourcegit
 	arch = x86_64
@@ -14,11 +14,11 @@ pkgbase = sourcegit-accounts-bin
 	provides = sourcegit-bin
 	conflicts = sourcegit
 	conflicts = sourcegit-bin
-	source = sourcegit_2026.23.1-LICENSE::https://raw.githubusercontent.com/cerocss/sourcegit/v2026.23.1/LICENSE
+	source = sourcegit_2026.24.1-LICENSE::https://raw.githubusercontent.com/cerocss/sourcegit/v2026.24.1/LICENSE
 	sha256sums = ec746490472d7ae4317d257df27ea8077f68c6079b07f8ff32ac6ae12db9f32f
-	source_x86_64 = sourcegit_2026.23.1-1_amd64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.23.1/sourcegit_2026.23.1-1_amd64.deb
-	sha256sums_x86_64 = f830b42ef14b0e723211c823da18471a9c687b8c9c0d0c62647250020095b138
-	source_aarch64 = sourcegit_2026.23.1-1_arm64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.23.1/sourcegit_2026.23.1-1_arm64.deb
-	sha256sums_aarch64 = 7a18a54d790209f63bbf23fb0c53cb7e51e004115b16394888239b28cd387c8b
+	source_x86_64 = sourcegit_2026.24.1-1_amd64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.24.1/sourcegit_2026.24.1-1_amd64.deb
+	sha256sums_x86_64 = 75fd644abb67d86e5bb08587abfeba6e2040c71ec381b59458560ed10c5920a9
+	source_aarch64 = sourcegit_2026.24.1-1_arm64.deb::https://github.com/cerocss/sourcegit/releases/download/v2026.24.1/sourcegit_2026.24.1-1_arm64.deb
+	sha256sums_aarch64 = 5bfca3fe424e50d0552e87bcca5e8c8b53af55f6c09ae654d1ac3b11e069b9b7
 
 pkgname = sourcegit-accounts-bin
